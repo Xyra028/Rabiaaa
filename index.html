@@ -82,42 +82,71 @@ const card = $('card'), yes = $('yes'), no = $('no'), msg = $('msg');
 let n = 0, won = false;
 
 const M = [
-  "emin misin? ",
-  "ya hadi hadi ",
-  "hayırı götürdüm bul öyle tıkla😔😔 ",
-  "bence yanlış butona bastın",
-  "su samurlarına yazık valla 🦦",
-  "hadi ama ya 🥺👉👈",
-  "evete bassan ne olucak sanki",
-  "hadi rabiaa evet dee"
+  "emin misin? 😔😔",
+  "ya hadi hadi",
+  "hayıra tıklama ama olmaz böyle",
+  "söz istediğin hersey olur",
+  "su samurlarına yazık vala 🦦",
+  "hadi ama ya😔😔😔",
+  "evet desen ne olucak sanki",
+  "hadi ama evet dee"
 ];
 
+let ys = 1; // Evet butonunun ölçeği
+
+// Ekranda Hayır'ın durabileceği sınırlar (çentik ve alt çubuk payı dahil)
+function bounds() {
+  const w = no.offsetWidth, h = no.offsetHeight;
+  return { w, h, minX: 12, maxX: Math.max(12, innerWidth - w - 12), minY: 30, maxY: Math.max(30, innerHeight - h - 36) };
+}
+
 function moveNo() {
-  const w = no.offsetWidth, h = no.offsetHeight, vw = innerWidth, vh = innerHeight;
-  if (no.style.position !== 'fixed') {
+  const b = bounds();
+  if (no.parentNode !== document.body) {
+    // Kart eğik (transform) olduğu için fixed buton kartın içinde yanlış hesaplanıyordu.
+    // Butonu body'ye taşıyınca konum gerçekten ekrana göre oluyor.
     const r = no.getBoundingClientRect();
     no.style.position = 'fixed';
-    no.style.left = r.left + 'px';
-    no.style.top = r.top + 'px';
+    no.style.left = (r.left + r.width / 2 - b.w / 2) + 'px';
+    no.style.top = (r.top + r.height / 2 - b.h / 2) + 'px';
+    document.body.appendChild(no);
     void no.offsetWidth;
   }
-  const y = yes.getBoundingClientRect(), pad = 14;
-  let x, t, ok, tries = 0;
-  do {
-    x = 10 + Math.random() * (vw - w - 20);
-    t = 10 + Math.random() * (vh - h - 20);
-    ok = x + w < y.left - pad || x > y.right + pad || t + h < y.top - pad || t > y.bottom + pad;
-  } while (!ok && ++tries < 30);
-  no.style.left = x + 'px';
-  no.style.top = t + 'px';
+  // Evet butonu (büyüyeceği son boyutuyla) ve Hayır'ın şu anki yeri
+  const yr = yes.getBoundingClientRect();
+  const yx = yr.left + yr.width / 2, yy = yr.top + yr.height / 2;
+  const yw = yes.offsetWidth * ys / 2 + 20, yh = yes.offsetHeight * ys / 2 + 20;
+  const curX = parseFloat(no.style.left), curY = parseFloat(no.style.top);
+  let best = null, bestD = -1;
+  for (let i = 0; i < 50; i++) {
+    const x = b.minX + Math.random() * (b.maxX - b.minX);
+    const t = b.minY + Math.random() * (b.maxY - b.minY);
+    const clear = x + b.w < yx - yw || x > yx + yw || t + b.h < yy - yh || t > yy + yh;
+    const far = Math.hypot(x - curX, t - curY) > 90;
+    if (clear && far) { best = { x, t }; break; }
+    const d = Math.hypot(x + b.w / 2 - yx, t + b.h / 2 - yy);
+    if (clear && d > bestD) { best = { x, t }; bestD = d; }
+  }
+  if (!best) best = { x: yx < innerWidth / 2 ? b.maxX : b.minX, t: b.minY };
+  no.style.left = best.x + 'px';
+  no.style.top = best.t + 'px';
 }
+
+// Ekran dönerse / boyut değişirse buton dışarıda kalmasın
+addEventListener('resize', () => {
+  if (no.parentNode !== document.body || won) return;
+  const b = bounds();
+  no.style.left = Math.min(Math.max(parseFloat(no.style.left), b.minX), b.maxX) + 'px';
+  no.style.top = Math.min(Math.max(parseFloat(no.style.top), b.minY), b.maxY) + 'px';
+});
 
 no.addEventListener('click', () => {
   if (won) return;
   n++;
   msg.textContent = n <= M.length ? M[n - 1] : M[4 + ((n - 5) % 4)];
   if (n >= 4) no.textContent = 'Hayır 😭';
-  yes.style.transform = `scale(${Math.min(1 + n * 0.1, 1.5)})`;
+  ys = Math.min(1 + n * 0.1, 1.5);
+  yes.style.transform = `scale(${ys})`;
   no.style.transform = `scale(${Math.max(1 - n * 0.04, 0.72)})`;
   card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
   if (navigator.vibrate) navigator.vibrate(40);
@@ -162,7 +191,7 @@ yes.addEventListener('click', () => {
   no.style.display = 'none';
   card.classList.add('win');
   $('title').textContent = 'SONUNDAA BİLİYORDUM EVETT DİYECEĞİNİ! 🎉';
-  msg.textContent = 'beni çok mutlu ettin Rabia 🥰🦦';
+  msg.textContent = 'SÖZ PİSMAN ETMİCEM';
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
   burst();
   if (!running) { running = true; tick(); }
