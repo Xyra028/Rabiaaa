@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffd3e0">
-<title>Rabiaaa 🦦</title>
+<title>Rabia 🦦</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
 .win .btns{display:none}
 @media (prefers-reduced-motion:reduce){#yes{animation:none}}
 
-
+/* ---- Giriş ekranı ---- */
 #prop{display:none}
 #intro{position:fixed;inset:0;z-index:10;transition:opacity .45s}
 #intro.out{opacity:0;pointer-events:none}
@@ -91,11 +91,11 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
 <canvas id="fx"></canvas>
 
 <main class="card" id="card">
-  <h1 id="title"><span class="nm">Rabia</span> benimle çıkar mısın?</h1>
+  <h1 id="title"><span class="nm">Rabia</span>, benimle çıkar mısın?</h1>
   <p class="msg" id="msg">bi düşün ama çok düşünme 🦦</p>
   <div class="btns">
     <button id="yes">Evet</button>
-    <button id="no">Hayır 😔</button>
+    <button id="no">Hayır 😢</button>
   </div>
 </main>
 </div>
@@ -103,7 +103,7 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
 <section id="intro">
   <canvas id="zc"></canvas>
   <div class="chip" id="chip"></div>
-  <button id="go">Kararın değişirse </button>
+  <button id="go">Teklife git 💌</button>
 </section>
 
 <script>
@@ -117,14 +117,13 @@ const M = [
   "sevmeyi denesen belki olur",
   "sevebilirsin bence",
   "darlamam söz",
-  "yanlış butona nasıl bu kadar cok basabilirsin",
-  "evet sol tarafta,
-  "Rabiaa evett de artııkk"
+  "yanlış butona nasıl bu kadar çok basabilirsin",
+  "evet sol tarafta"
 ];
 
-let ys = 1; 
+let ys = 1; // Evet butonunun ölçeği
 
-
+// Ekranda Hayır'ın durabileceği sınırlar (çentik ve alt çubuk payı dahil)
 function bounds() {
   const w = no.offsetWidth, h = no.offsetHeight;
   return { w, h, minX: 12, maxX: Math.max(12, innerWidth - w - 12), minY: 30, maxY: Math.max(30, innerHeight - h - 36) };
@@ -133,15 +132,19 @@ function bounds() {
 function moveNo() {
   const b = bounds();
   if (no.parentNode !== document.body) {
-    
+    // Kart eğik (transform) olduğu için fixed buton kartın içinde yanlış hesaplanıyordu.
+    // Butonu body'ye taşıyınca konum gerçekten ekrana göre oluyor.
     const r = no.getBoundingClientRect();
     no.style.position = 'fixed';
     no.style.left = (r.left + r.width / 2 - b.w / 2) + 'px';
     no.style.top = (r.top + r.height / 2 - b.h / 2) + 'px';
+    const row = no.parentNode, ph = document.createElement('span');
+    ph.style.width = b.w + 'px';   // Hayır gidince Evet sol tarafta kalsın
+    row.appendChild(ph);
     document.body.appendChild(no);
     void no.offsetWidth;
   }
-  
+  // Evet butonu (büyüyeceği son boyutuyla) ve Hayır'ın şu anki yeri
   const yr = yes.getBoundingClientRect();
   const yx = yr.left + yr.width / 2, yy = yr.top + yr.height / 2;
   const yw = yes.offsetWidth * ys / 2 + 20, yh = yes.offsetHeight * ys / 2 + 20;
@@ -161,7 +164,7 @@ function moveNo() {
   no.style.top = best.t + 'px';
 }
 
-
+// Ekran dönerse / boyut değişirse buton dışarıda kalmasın
 addEventListener('resize', () => {
   if (no.parentNode !== document.body || won) return;
   const b = bounds();
@@ -172,7 +175,7 @@ addEventListener('resize', () => {
 no.addEventListener('click', () => {
   if (won) return;
   n++;
-  msg.textContent = n <= M.length ? M[n - 1] : M[4 + ((n - 5) % 4)];
+  msg.textContent = n <= M.length ? M[n - 1] : M[M.length - 3 + ((n - M.length - 1) % 3)];
   if (n >= 4) no.textContent = 'Hayır 😭';
   ys = Math.min(1 + n * 0.1, 1.5);
   yes.style.transform = `scale(${ys})`;
@@ -182,7 +185,7 @@ no.addEventListener('click', () => {
   if (n >= 2) moveNo();   // 2. tıktan sonra kaçmaya başlar
 });
 
-
+// ---- Kutlama ----
 const cv = $('fx'), cx = cv.getContext('2d');
 let W, H, D, P = [], running = false;
 function rs() { D = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * D; cv.height = H * D; cx.setTransform(D, 0, 0, D, 0, 0); }
@@ -234,15 +237,15 @@ yes.addEventListener('click', () => {
 });
 </script>
 <script>
-
+// ---- Giriş: 4 milyar kırmızı kare ve parlayan pembe olan ----
 (() => {
   const cv = document.getElementById('zc'), g = cv.getContext('2d'), chip = document.getElementById('chip');
-  const Z0 = 7, F = Math.pow(220 / 7, 1 / 6);         
-  const T = [0, .4, .65, .82, .93, .98, 1];           
-  const TX = 12.5, TY = -21.5;                        
+  const Z0 = 7, F = Math.pow(220 / 7, 1 / 6);          // 6 dokunuşta 7px -> 220px kare
+  const T = [0, .4, .65, .82, .93, .98, 1];            // kameranın hedefe kayma oranı
+  const TX = 12.5, TY = -21.5;                         // pembe karenin yeri
   const CAP = [
     "4 milyar kadın <br> ama sadece birisi parlıyor <br>dokunup yaklaşş",
-    "abo ", "az kaldı", "idris baba gel artık", "az kaldı", "abo",
+    "abo", "az kaldı", "idris baba gel artık", "az kaldı", "abo",
     "GELDİKK<br>TIKLAA"
   ];
   const HE = ['💗', '💖', '💕', '💞'], HP = [];
@@ -275,7 +278,7 @@ yes.addEventListener('click', () => {
       const h = hs(i, j); g.fillStyle = `hsl(${352 + h * 10},${70 + h * 15}%,${40 + h * 14}%)`;
       g.fillRect(W / 2 + (i - cx) * z + off, H / 2 + (j - cy) * z + off, sq, sq);
     }
-    
+    // pembe kare + sadece ışık dalgası (çevresindeki kareler parlamıyor)
     const tx = W / 2 + (TX - cx) * z, ty = H / 2 + (TY - cy) * z;
     let ga = 1;
     if (arrive >= 0) { const q = (now - arrive) / 2800; ga = q < .2 ? 1 + q * 2 : Math.max(0, 1.4 * (1 - (q - .2) / .8)); }
@@ -315,7 +318,7 @@ yes.addEventListener('click', () => {
     else {
       done = true; burst();
       chip.className = 'chip msg';
-      chip.innerHTML = 'Red etmiş olsan da<br>çabalamaya devam edicem';
+      chip.innerHTML = 'Red etmiş olsan da<br>seni sevmeye devam edicem';
     }
   });
 
