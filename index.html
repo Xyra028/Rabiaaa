@@ -103,7 +103,7 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
 <section id="intro">
   <canvas id="zc"></canvas>
   <div class="chip" id="chip"></div>
-  <button id="go">Teklife git </button>
+  <button id="go">tekrar düşünürsen </button>
 </section>
 
 <script>
@@ -121,9 +121,9 @@ const M = [
   "evet sol tarafta"
 ];
 
-let ys = 1; // Evet butonunun ölçeği
+let ys = 1; 
 
-// Ekranda Hayır'ın durabileceği sınırlar (çentik ve alt çubuk payı dahil)
+
 function bounds() {
   const w = no.offsetWidth, h = no.offsetHeight;
   return { w, h, minX: 12, maxX: Math.max(12, innerWidth - w - 12), minY: 30, maxY: Math.max(30, innerHeight - h - 36) };
@@ -132,8 +132,8 @@ function bounds() {
 function moveNo() {
   const b = bounds();
   if (no.parentNode !== document.body) {
-    // Kart eğik (transform) olduğu için fixed buton kartın içinde yanlış hesaplanıyordu.
-    // Butonu body'ye taşıyınca konum gerçekten ekrana göre oluyor.
+    
+    //
     const r = no.getBoundingClientRect();
     no.style.position = 'fixed';
     no.style.left = (r.left + r.width / 2 - b.w / 2) + 'px';
@@ -144,7 +144,7 @@ function moveNo() {
     document.body.appendChild(no);
     void no.offsetWidth;
   }
-  // Evet butonu (büyüyeceği son boyutuyla) ve Hayır'ın şu anki yeri
+  // 
   const yr = yes.getBoundingClientRect();
   const yx = yr.left + yr.width / 2, yy = yr.top + yr.height / 2;
   const yw = yes.offsetWidth * ys / 2 + 20, yh = yes.offsetHeight * ys / 2 + 20;
@@ -223,7 +223,7 @@ yes.addEventListener('click', () => {
   no.style.display = 'none';
   card.classList.add('win');
   $('title').textContent = 'SONUNDAA BİLİYORDUM EVETT DİYECEĞİNİ! 🎉';
-  msg.textContent = 'beni çok mutlu ettin Rabia 🥰🦦';
+  msg.textContent = 'PİŞMAN ETMİCEM SÖZZZ';
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
   burst();
   if (!running) { running = true; tick(); }
