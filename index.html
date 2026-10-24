@@ -204,40 +204,6 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
 .gcard h2{margin:0 0 8px;font-size:38px;line-height:1}
 .gcard p{margin:0;font-size:26px;line-height:1.1}
 .gbtns{display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:16px}
-
-/* ---- Günün kartı ---- */
-#dbtn{
-  position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom) + 126px);
-  padding:3px 16px 5px;font-size:22px;font-weight:700;background:#ffe3ec;
-  border-radius:18px 255px 18px 225px/225px 18px 255px 18px;box-shadow:3px 4px 0 #5a2a3c;
-}
-#daily{
-  display:none;position:fixed;inset:0;z-index:27;opacity:0;transition:opacity .35s;align-items:center;justify-content:center;
-  padding:18px;background:radial-gradient(#ffbdd1 1.6px,transparent 1.8px) 0 0/22px 22px,#ffd3e0;
-}
-#daily.show{opacity:1}
-.dcard{max-width:330px;padding:34px 20px 20px}
-.dh{margin:0 0 12px;font-size:34px;font-weight:700;line-height:1}
-.dface{
-  height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:60px;line-height:1;cursor:pointer;
-  background:#ff8fb3;border:2.5px solid #5a2a3c;border-radius:12px 18px 12px 16px;box-shadow:4px 5px 0 #5a2a3c;animation:wig 1.6s ease-in-out infinite;
-}
-.dface small{font-size:24px;color:#fff;margin-top:8px;font-weight:700}
-.dfact{display:none;margin:0;font-size:27px;line-height:1.1;min-height:130px;font-weight:600}
-.dfact.in{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
-.dstreak{margin:12px 0 8px;font-size:24px;font-weight:700;color:#e8346f}
-.dgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
-.dc{height:42px;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px dashed #b9899b;border-radius:10px;opacity:.7}
-.dc.got{border:2px solid #5a2a3c;background:#ffe3ec;opacity:1;cursor:pointer}
-.dc.now{border-color:#e8346f}
-.dbtns{display:flex;flex-direction:column;gap:10px;align-items:center}
-.dtest{display:none;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:6px;border:2px dashed #b9899b;border-radius:10px;font-size:20px}
-.dtest span{margin-right:2px;opacity:.8}
-.dtest button{font-size:20px;padding:0 10px 2px;background:#fff;border:2px solid #5a2a3c;border-radius:8px}
-.dfin{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;padding:18px;background:rgba(29,15,23,.72);opacity:0;transition:opacity .4s}
-.dfin.show{opacity:1}
-.dfin .card{max-width:330px;padding:36px 22px 22px}
-.dfin p{margin:0 0 14px;font-size:29px;line-height:1.1;font-weight:700}
 </style>
 </head>
 <body>
@@ -263,7 +229,6 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
   <div class="chip" id="chip"></div>
   <button id="go">tekrar düşünürsen </button>
   <button id="sry">özür dilerim 😔😔</button>
-  <button id="dbtn">günün kartı 🎴</button>
   <button id="spec">özel </button>
   <button id="gbtn">oyun 🦦</button>
 </section>
@@ -302,26 +267,6 @@ button{font:inherit;cursor:pointer;color:#5a2a3c;border:2.5px solid #5a2a3c}
     <h1>Ne yaptıysamm<br><span class="sr">ÖZÜRRR<br>DİLERİMMM</span></h1>
   </main>
   <button id="back">← geri dön</button>
-</section>
-
-<section id="daily">
-  <div class="card dcard">
-    <p class="dh" id="dhead">günün su samuru kartı</p>
-    <div class="dface" id="dface">🦦<small>açmak için dokun</small></div>
-    <p class="dfact" id="dfact"></p>
-    <p class="dstreak" id="dstreak"></p>
-    <div class="dgrid" id="dgrid"></div>
-    <div class="dbtns"><button class="vb pk" id="dmsg" style="display:none">💌 mesajı gör</button><button class="vb" id="dback">ana sayfaya dön</button></div>
-    <div class="dtest" id="dtest"><span id="dtlabel">test</span><button id="dt1">+1 gün</button><button id="dt2">finale</button><button id="dt3">bitir</button></div>
-  </div>
-  <div class="dfin" id="dfin">
-    <div class="card">
-      <p>bu seriyi bitirdinn bitirinceğini düşünmüyodum😔</p>
-      <p>ne kadar kötü davransanda 1 gün iyi davranman hepsini siliyoo seviyorum seni</p>
-      <p>ölmeden önce umarım yaşarım</p>
-      <button class="vb pk" id="dfinok">tamam</button>
-    </div>
-  </div>
 </section>
 
 <section id="game">
@@ -738,105 +683,6 @@ yes.addEventListener('click', () => {
   });
   $('gmain').addEventListener('click', start);
   $('gback').addEventListener('click', () => { stop(); hide(game); });
-})();
-</script>
-<script>
-// ---- Günün su samuru kartı (her gün yeni kart, seri sayacı) ----
-(() => {
-  const $ = id => document.getElementById(id);
-  // Yeni bilgi eklemek için listeye cümle ekleyebilirsin; her gün sıradaki kart açılır.
-  const FACTS = [
-    "Deniz samurları uyurken birbirlerinden ayrılmamak için el ele tutuşurlaaarr",
-    "Deniz samurlarının kürkü o kadar yoğuuun ki 6.45 cm küp lük karede yaklaşık 1 milyon kıl bulunuyooor",
-    "Bazı deniz samurlarının koltuk altında minicik bir cebi varrr ve en sevdikleri taşları orada saklıyolaarr",
-    "Yavru deniz samurları o kadar hafif ki minicik oldukları için suyun üstünde yüzüyolarr",
-    "Deniz samurları deniz kestanelerini yiyerek yosun ormanlarını koruyolaar",
-    "Su samurları bıyıklarıylaa karanlık sularda bile diğer balıkların hareketlerini hissedebiliyolarr",
-    "Bir deniz samuru günde kendi vücut ağırlığının yaklaşık dörtte biri kadar yemek yiyooor (şişkolar)",
-    "Bir araya gelip yüzen deniz samuru gruplarına sal deniliyooor hepsi bir arada sal gibi",
-    "Anne deniz samurları sırt üstü yüzerken minik yavrularını üstünde taşırlarrr",
-    "Türkiyede akarsularda ve göllerdee yaşayan Avrasya su samurlarıı varr"
-  ];
-  const N = FACTS.length, START = new Date(2026, 9, 24);
-  const sec = $('daily'), face = $('dface'), fact = $('dfact'), head = $('dhead'), st = $('dstreak'), grid = $('dgrid');
-  let data = { seen: [], last: -1, streak: 0 };
-  try { const s = JSON.parse(localStorage.getItem('rb_daily')); if (s && Array.isArray(s.seen)) data = s; } catch (e) {}
-  let dayOff = 0, sandbox = false, real = null;   // test için
-  const save = () => { if (sandbox) return; try { localStorage.setItem('rb_daily', JSON.stringify(data)); } catch (e) {} };
-  const today = () => { const d = new Date(); return Math.max(0, Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - START) / 864e5) + dayOff); };
-  const show = (el, d) => { el.style.display = d; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show'))); };
-  const hide = el => { el.classList.remove('show'); setTimeout(() => el.style.display = 'none', 360); };
-
-  function showFact(f, isToday) {
-    face.style.display = 'none'; fact.style.display = 'block'; fact.textContent = FACTS[f];
-    head.textContent = isToday ? 'bugünün kartı 🦦' : 'kart ' + (f + 1) + ' 🦦';
-    fact.classList.remove('in'); void fact.offsetWidth; fact.classList.add('in');
-  }
-  function render() {
-    const tf = today() % N;
-    grid.innerHTML = '';
-    for (let i = 0; i < N; i++) {
-      const got = data.seen.includes(i), c = document.createElement('div');
-      c.className = 'dc' + (got ? ' got' : '') + (i === tf ? ' now' : '');
-      c.textContent = got ? '🦦' : '🔒';
-      if (got) c.addEventListener('click', () => showFact(i, i === tf));
-      grid.appendChild(c);
-    }
-    st.textContent = (data.streak > 1 ? '🔥 ' + data.streak + ' gün üst üste · ' : 'her gün yeni kart · ') + data.seen.length + '/' + N;
-    $('dmsg').style.display = data.seen.length >= N ? 'inline-block' : 'none';
-  }
-
-  $('dbtn').addEventListener('click', () => {
-    const idx = today();
-    head.textContent = 'günün su samuru kartı';
-    if (data.last === idx) showFact(idx % N, true);
-    else { face.style.display = 'flex'; fact.style.display = 'none'; }
-    render(); show(sec, 'flex');
-  });
-  face.addEventListener('click', () => {
-    const idx = today(), f = idx % N, before = data.seen.length;
-    if (data.last !== idx) {
-      data.streak = data.last === idx - 1 ? data.streak + 1 : 1;
-      data.last = idx;
-      if (!data.seen.includes(f)) data.seen.push(f);
-      save();
-    }
-    showFact(f, true); render();
-    if (navigator.vibrate) navigator.vibrate(30);
-    if (before < N && data.seen.length >= N) setTimeout(openFin, 900);   // 10/10 oldu
-  });
-  $('dback').addEventListener('click', () => hide(sec));
-
-  // 10/10: kutlama + mesaj
-  const fin = $('dfin');
-  function openFin() {
-    fin.style.display = 'flex';
-    requestAnimationFrame(() => requestAnimationFrame(() => fin.classList.add('show')));
-    if (window.celebrate) window.celebrate();
-  }
-  $('dmsg').addEventListener('click', openFin);
-
-  // ---- TEST 
-  const TEST = true;
-  $('dtest').style.display = TEST ? 'flex' : 'none';
-  function enterSandbox() { if (!sandbox) { sandbox = true; real = data; data = JSON.parse(JSON.stringify(data)); } }
-  function refreshView() {
-    const idx = today();
-    head.textContent = 'günün su samuru kartı';
-    if (data.last === idx) showFact(idx % N, true); else { face.style.display = 'flex'; fact.style.display = 'none'; }
-    render();
-    $('dtlabel').textContent = sandbox ? 'test +' + dayOff : 'test';
-  }
-  $('dt1').addEventListener('click', () => { enterSandbox(); dayOff++; refreshView(); });                 // sonraki güne geç
-  $('dt2').addEventListener('click', () => {                                                              // 10/10 finalini dene
-    enterSandbox();
-    const f = today() % N;
-    data.seen = [...Array(N).keys()].filter(i => i !== f);
-    if (data.last === today()) data.last = -1;
-    refreshView();
-  });
-  $('dt3').addEventListener('click', () => { if (sandbox) { data = real; sandbox = false; dayOff = 0; } refreshView(); });   // testi bitir
-  $('dfinok').addEventListener('click', () => { fin.classList.remove('show'); setTimeout(() => fin.style.display = 'none', 420); });
 })();
 </script>
 </body>
