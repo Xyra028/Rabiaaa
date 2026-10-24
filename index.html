@@ -816,8 +816,8 @@ yes.addEventListener('click', () => {
   }
   $('dmsg').addEventListener('click', openFin);
 
-  // ---- TEST araçları: yayınlamadan önce TEST = false yap ----
-  const TEST = false;
+  // ---- TEST 
+  const TEST = true;
   $('dtest').style.display = TEST ? 'flex' : 'none';
   function enterSandbox() { if (!sandbox) { sandbox = true; real = data; data = JSON.parse(JSON.stringify(data)); } }
   function refreshView() {
